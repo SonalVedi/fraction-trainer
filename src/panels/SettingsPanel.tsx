@@ -4,14 +4,26 @@ import { Pill } from "../components/Pill";
 import { clampInt } from "../utils/parse";
 
 export function SettingsPanel({ settings, setSettings }: { settings: Settings; setSettings: (s: Settings) => void }) {
+
   function setPreset(n: number) { setSettings({ ...settings, testCount: n }); }
-  function setTargetMMSS(s: string) {
+
+  function setTargetMMSS(s: string): void {
     const m = s.match(/^(\d{1,2}):(\d{2})$/);
-    if (!m) { setSettings({ ...settings, targetTimeSec: null }); return; }
-    const mm = parseInt(m[1], 10), ss = parseInt(m[2], 10);
+    if (!m) {
+      setSettings({ ...settings, targetTimeSec: null });
+      return;
+    }
+
+    const mm = Number.parseInt(m[1] ?? "0", 10);
+    const ss = Number.parseInt(m[2] ?? "0", 10);
     const total = mm * 60 + ss;
-    setSettings({ ...settings, targetTimeSec: Number.isFinite(total) ? total : null });
+
+    setSettings({
+      ...settings,
+      targetTimeSec: Number.isFinite(total) ? total : null,
+    });
   }
+
   return (
     <div className="grid md:grid-cols-3 gap-4 bg-white border rounded-2xl p-4 shadow-sm">
       <div>

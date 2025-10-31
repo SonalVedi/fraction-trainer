@@ -49,7 +49,7 @@ export default function App() {
     <div className="bg-gradient-to-b from-gray-50 to-white text-gray-900 min-h-screen">
       <div className="max-w-4xl mx-auto p-6">
         <header className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Fraction Practice & Timed Test</h1>
+          <h1 className="text-2xl font-bold">Fraction Practice & Test</h1>
           <div className="flex items-center gap-2">
             <Pill active={tab === "practice"} onClick={() => setTab("practice")}>Practice</Pill>
             <Pill active={tab === "test"} onClick={() => setTab("test")}>Timed Test</Pill>

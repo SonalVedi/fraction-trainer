@@ -14,10 +14,29 @@ export function generateFraction(maxNum: number, maxDen: number, allowMixed: boo
 }
 
 export function generateQuestion(settings: Settings): Question {
-  const op: Operation = settings.operations.length === 2 ? (Math.random() < 0.5 ? "×" : "÷") : settings.operations[0];
-  const a = generateFraction(settings.maxNumerator, settings.maxDenominator, settings.allowMixed, settings.allowNegatives);
-  let b = generateFraction(settings.maxNumerator, settings.maxDenominator, settings.allowMixed, settings.allowNegatives);
-  if (op === "÷" && b.n === 0) b.n = 1;
+  // Ensure we always have at least one operation
+  const ops: Operation[] =
+    settings.operations.length > 0 ? settings.operations : (["×"] as Operation[]);
+
+  // Choose the op deterministically from the safe array
+  const op: Operation =
+    ops.length === 2 ? (Math.random() < 0.5 ? "×" : "÷") : ops[0]!; // '!' safe because ops.length >= 1
+
+  const a = generateFraction(
+    settings.maxNumerator,
+    settings.maxDenominator,
+    settings.allowMixed,
+    settings.allowNegatives
+  );
+  const b = generateFraction(
+    settings.maxNumerator,
+    settings.maxDenominator,
+    settings.allowMixed,
+    settings.allowNegatives
+  );
+
+  if (op === "÷" && b.n === 0) b.n = 1; // avoid divide-by-zero
+
   const answer = op === "×" ? multiply(a, b) : divide(a, b);
   return { a, b, op, answer: simplify(answer.n, answer.d) };
 }

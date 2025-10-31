@@ -2,27 +2,45 @@ import { Fraction } from "../types";
 import { simplify } from "./fraction";
 
 export function parseAnswer(s: string): Fraction | null {
-  s = s.trim().replace(/\s+/g, " ");
-  if (!s) return null;
-  let m = s.match(/^(-?)(\d+)\s+(\d+)\/(\d+)$/);
+  const str = s.trim().replace(/\s+/g, " ");
+  if (!str) return null;
+
+  // mixed number: -?W N/D
+  let m = str.match(/^(-?)(\d+)\s+(\d+)\/(\d+)$/);
   if (m) {
-    const sign = m[1] === "-" ? -1 : 1;
-    const W = parseInt(m[2], 10), N = parseInt(m[3], 10), D = parseInt(m[4], 10);
-    if (D === 0) return null;
+    const [, signStr, wStr, nStr, dStr] = m; // destructure
+    if (!wStr || !nStr || !dStr) return null; // TS-safe guard
+
+    const sign = signStr === "-" ? -1 : 1;
+    const W = Number.parseInt(wStr, 10);
+    const N = Number.parseInt(nStr, 10);
+    const D = Number.parseInt(dStr, 10);
+    if (!Number.isFinite(W) || !Number.isFinite(N) || !Number.isFinite(D) || D === 0) return null;
+
     return simplify(sign * (W * D + N), D);
   }
-  if (/^-?\d+$/.test(s)) {
-    return { n: parseInt(s, 10), d: 1 };
+
+  // integer
+  if (/^-?\d+$/.test(str)) {
+    return { n: Number.parseInt(str, 10), d: 1 };
   }
-  m = s.match(/^\s*(-?\d+)\s*\/\s*(-?\d+)\s*$/);
+
+  // simple fraction a/b
+  m = str.match(/^\s*(-?\d+)\s*\/\s*(-?\d+)\s*$/);
   if (m) {
-    const n = parseInt(m[1], 10);
-    const d = parseInt(m[2], 10);
-    if (d === 0) return null;
+    const [, nStr, dStr] = m;
+    if (!nStr || !dStr) return null;
+
+    const n = Number.parseInt(nStr, 10);
+    const d = Number.parseInt(dStr, 10);
+    if (!Number.isFinite(n) || !Number.isFinite(d) || d === 0) return null;
+
     return simplify(n, d);
   }
+
   return null;
 }
+
 
 export function clampInt(v: number, min: number, max: number) {
   if (isNaN(v)) return min;

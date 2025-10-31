@@ -16,7 +16,8 @@
     "jsx": "react-jsx",
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "include": [
     "src"
